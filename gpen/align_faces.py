@@ -6,11 +6,11 @@ Created on Mon Apr 24 15:43:29 2017
 """
 @Modified by yangxy (yangtao9009@gmail.com)
 """
+
+# reference facial points, a list of coordinates (x,y)
 import cv2
 import numpy as np
 from skimage import transform as trans
-
-# reference facial points, a list of coordinates (x,y)
 REFERENCE_FACIAL_POINTS = [
     [30.29459953, 51.69630051],
     [65.53179932, 51.50139999],
@@ -115,7 +115,8 @@ def get_reference_facial_points(output_size=None,
     if (output_size and
             output_size[0] == tmp_crop_size[0] and
             output_size[1] == tmp_crop_size[1]):
-        print('output_size == DEFAULT_CROP_SIZE {}: return default reference points'.format(tmp_crop_size))
+        print('output_size == DEFAULT_CROP_SIZE {}: return default reference points'.format(
+            tmp_crop_size))
         return tmp_5pts
 
     if (inner_padding_factor == 0 and
@@ -134,7 +135,7 @@ def get_reference_facial_points(output_size=None,
     if ((inner_padding_factor > 0 or outer_padding[0] > 0 or outer_padding[1] > 0)
             and output_size is None):
         output_size = tmp_crop_size * \
-                      (1 + inner_padding_factor * 2).astype(np.int32)
+            (1 + inner_padding_factor * 2).astype(np.int32)
         output_size += np.array(outer_padding)
         print('              deduced from paddings, output_size = ', output_size)
 
@@ -211,7 +212,7 @@ def warp_and_crop_face(src_img,
                        facial_pts,
                        reference_pts=None,
                        crop_size=(96, 112),
-                       align_type='smilarity'): #smilarity cv2_affine affine
+                       align_type='smilarity'):  # smilarity cv2_affine affine
     if reference_pts is None:
         if crop_size[0] == 96 and crop_size[1] == 112:
             reference_pts = REFERENCE_FACIAL_POINTS
@@ -248,10 +249,10 @@ def warp_and_crop_face(src_img,
         raise FaceWarpException(
             'facial_pts and reference_pts must have the same shape')
 
-    if align_type is 'cv2_affine':
+    if align_type == 'cv2_affine':
         tfm = cv2.getAffineTransform(src_pts[0:3], ref_pts[0:3])
         tfm_inv = cv2.getAffineTransform(ref_pts[0:3], src_pts[0:3])
-    elif align_type is 'affine':
+    elif align_type == 'affine':
         tfm = get_affine_transform_matrix(src_pts, ref_pts)
         tfm_inv = get_affine_transform_matrix(ref_pts, src_pts)
     else:
@@ -261,6 +262,7 @@ def warp_and_crop_face(src_img,
         params, _ = _umeyama(ref_pts, src_pts, False, scale=1.0/scale)
         tfm_inv = params[:2, :]
 
-    face_img = cv2.warpAffine(src_img, tfm, (crop_size[0], crop_size[1]), flags=3)
+    face_img = cv2.warpAffine(
+        src_img, tfm, (crop_size[0], crop_size[1]), flags=3)
 
     return face_img, tfm_inv
