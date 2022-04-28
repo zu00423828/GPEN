@@ -92,8 +92,9 @@ class FaceEnhancement(object):
             orig_faces.append(of)
             enhanced_faces.append(ef)
 
-            tmp_mask = self.mask
-            # tmp_mask = self.mask_postprocess(self.faceparser.process(ef)[0]/255.)
+            # tmp_mask = self.mask
+            tmp_mask = self.mask_postprocess(
+                self.faceparser.process(ef)[0]/255.)
             tmp_mask = cv2.resize(tmp_mask, (self.in_size, self.in_size))
             tmp_mask = cv2.warpAffine(
                 tmp_mask, tfm_inv, (width, height), flags=3)

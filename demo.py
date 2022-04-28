@@ -115,13 +115,14 @@ def process(vidoe_path, pkl, out_path):
         *'XVID'), fps, (w, h))
     # f = open(pkl, 'rb')
     # isface_list = pickle.load(f)
-    chunk_video = cv2.VideoCapture('chunk.avi')
-    chunk_counts = int(chunk_video.get(7))
-    for i in trange(chunk_counts):
-        _, frame = chunk_video.read()
-        out_video.write(frame)
-    full_video.set(1, chunk_counts)
-    for i in trange(chunk_counts, frame_count):
+    # chunk_video = cv2.VideoCapture('chunk.avi')
+    # chunk_counts = int(chunk_video.get(7))
+    # for i in trange(chunk_counts):
+    #     _, frame = chunk_video.read()
+    #     out_video.write(frame)
+    # full_video.set(1, chunk_counts)
+    # for i in trange(chunk_counts, frame_count):
+    for i in trange(frame_count):
         _, frame = full_video.read()
         # frame = cv2.resize(frame, (w//2, h//2))
         img_out, _, _ = processer.process(
@@ -129,7 +130,7 @@ def process(vidoe_path, pkl, out_path):
         img_out = cv2.resize(img_out, (w, h))
         out_video.write(img_out)
 
-    shutil.copyfile(temp_path, 'video/e'+Path(vidoe_path).stem+'.avi')
+    # shutil.copyfile(temp_path, 'video/e'+Path(vidoe_path).stem+'.avi')
     command = f"ffmpeg -y -i {vidoe_path} temp.wav "
     subprocess.call(command, shell=True)
     command = f"ffmpeg -y -i {temp_path} -i temp.wav -vcodec h264 {out_path} "
@@ -253,4 +254,7 @@ if __name__ == '__main__':
     # extract_landmark('video/4.mp4', 'video/pkl/4.pkl')
     # blur_video_mouth('video/4.mp4', 'video/pkl/4.pkl', 'blur.avi')
     # process('video/5.mp4', 'video/pkl/5.pkl', 'video/out/enhance5.mp4')
-    process('video/6.mp4', 'video/pkl/6.pkl', 'video/out/enhance6.mp4')
+    process('video2/Benediction_ch_Benediction_ch_None_0_0.0_1_0.mp4',
+            None, 'video2/out/Benediction_ch_Benediction_ch_None_0_0.0_1_0.mp4')
+    process('video2/Benediction_en_Benediction_en_None_0_0.0_1_0.mp4',
+            None, 'video2/out/Benediction_en_Benediction_en_None_0_0.0_1_0.mp4')
